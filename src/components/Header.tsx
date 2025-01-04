@@ -6,7 +6,7 @@ export default function Header() {
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <img 
-            src="src/assets/CSSLeetcodeCommunity.png" 
+            src="/CSSLeetcodeCommunity.png"
             alt="LeetCode Community Dashboard" 
             className="h-8 w-8"
           />
