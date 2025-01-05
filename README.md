@@ -1,50 +1,57 @@
-# React + TypeScript + Vite
+# LeetCode Community Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Track and celebrate your community's daily LeetCode progress. See who solved what, in which language, and keep everyone motivated! 🚀
 
-Currently, two official plugins are available:
+![Dashboard Preview](./public/assets/dashboard-preview.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## Expanding the ESLint configuration
+- 📊 Real-time community progress tracking
+- 🎯 Daily problem submission monitoring
+- 💻 Programming language statistics
+- 🔄 Automatic submission syncing
+- 🌐 Chrome extension integration
+- 🎨 Beautiful UI with dark mode support
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## 🚀 Getting Started
 
-- Configure the top-level `parserOptions` property like this:
+### Website Setup
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+# Clone the repository
+git clone https://github.com/aahftab/leetcode-community-dashboard.git
+cd leetcode-community-dashboard
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## 🤝 Contributing
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+We welcome contributions from the community! To get started:
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-branch`).
+3. Make your changes.
+4. Commit your changes (`git commit -m 'Add some feature'`).
+5. Push to the branch (`git push origin feature-branch`).
+6. Open a pull request.
+
+Please make sure to update tests as appropriate.
+
+## 📄 License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+
+## 📬 Contact
+
+If you have any questions, suggestions, or feedback, feel free to reach out to us:
+
+- For any inquiries, please contact [aahftab@gmail.com](mailto:aahftab@gmail.com).
+- GitHub Issues: [Create an issue](https://github.com/aahftab/leetcode-community-dashboard/issues)
