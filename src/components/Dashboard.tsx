@@ -187,7 +187,7 @@ export default function Dashboard() {
                                 rel="noopener noreferrer"
                                 className="font-medium hover:text-blue-600 transition-colors"
                               >
-                                {submission.username}
+                                {submission.name || submission.username}
                               </a>
                               {getMedalEmoji(index) && (
                                 <span 
