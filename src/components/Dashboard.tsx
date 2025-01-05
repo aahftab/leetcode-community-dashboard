@@ -7,16 +7,45 @@ import { Button } from "@/components/ui/button"
 
 interface LeetCodeSubmission {
   username: string
+  name: string
   question_slug: string
   lang: string
+  solved_at: string
 }
 
 interface ProcessedSubmission {
   [key: string]: {
     username: string
+    name: string
     lang: string
+    solved_at: string
   }[]
 }
+
+const formatTimestamp = (timestamp: string) => {
+  const date = new Date(timestamp)
+  return date.toLocaleTimeString('en-US', { 
+    hour: '2-digit', 
+    minute: '2-digit',
+    hour12: true 
+  })
+}
+
+const getMedalEmoji = (index: number) => {
+  switch (index) {
+    case 0: return '🥇'
+    case 1: return '🥈'
+    case 2: return '🥉'
+    default: return null
+  }
+}
+
+const EmptyQuestionState = () => (
+  <div className="flex flex-col items-center justify-center p-4 text-neutral-400">
+    <div className="text-2xl mb-2">📝</div>
+    <div className="text-sm">No submissions</div>
+  </div>
+)
 
 export default function Dashboard() {
   const [processedData, setProcessedData] = useState<ProcessedSubmission>({})
@@ -31,7 +60,9 @@ export default function Dashboard() {
       }
       acc[curr.question_slug].push({
         username: curr.username,
-        lang: curr.lang
+        name: curr.name,
+        lang: curr.lang,
+        solved_at: curr.solved_at
       })
       return acc
     }, {} as ProcessedSubmission)
@@ -45,7 +76,7 @@ export default function Dashboard() {
     setIsLoading(true)
     setError(null)
     try {
-      const API_ENDPOINT = "https://esuejqaspbhebyjoycoi.supabase.co/functions/v1/daily-students"
+      const API_ENDPOINT = import.meta.env.VITE_DEV_API_ENDPOINT || "https://esuejqaspbhebyjoycoi.supabase.co/functions/v1/daily-students"
       const response = await fetch(API_ENDPOINT)
       if (!response.ok) throw new Error('Failed to fetch submissions')
       const data = await response.json()
@@ -120,16 +151,20 @@ export default function Dashboard() {
           <Table>
             <TableHeader>
               <TableRow>
-                {questions.map((question) => (
+                {questions.map((question, qIndex) => (
                   <TableHead key={question} className="text-center">
-                    <a
-                    href={`https://leetcode.com/problems/${question}`} 
-                    className="text-blue-600 hover:underline"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >
-                      {formatQuestionName(question)}
+                    <div className="flex flex-col space-y-2">
+                      <span className="text-sm text-neutral-500">#{qIndex + 1}</span>
+                      <a
+                        href={`https://leetcode.com/problems/${question}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group hover:text-blue-600 transition-colors"
+                      >
+                        {formatQuestionName(question)}
+                        <span className="inline-block ml-1 opacity-0 group-hover:opacity-100 transition-opacity">↗</span>
                       </a>
+                    </div>
                   </TableHead>
                 ))}
               </TableRow>
@@ -138,22 +173,45 @@ export default function Dashboard() {
               <TableRow>
                 {questions.map((question) => (
                   <TableCell key={question} className="align-top">
-                    {processedData[question].map((submission, idx) => (
-                      <div key={idx} className="mb-2 text-center">
-                        <div>{submission.username}</div>
-                        <Badge 
-                          variant="outline" 
-                          className="mt-1"
-                          style={{
-                            backgroundColor: '#3572A5',
-                            color: 'white',
-                            textTransform: 'capitalize'
-                          }}
-                        >
-                          {submission.lang}
-                        </Badge>
-                      </div>
-                    ))}
+                    {processedData[question][0].username === null ? (
+                      <EmptyQuestionState />
+                    ) : (
+                      processedData[question]
+                        .sort((a, b) => new Date(a.solved_at).getTime() - new Date(b.solved_at).getTime())
+                        .map((submission, index) => (
+                          <div key={index} className="flex flex-col items-center space-y-2 p-2 rounded-md hover:bg-neutral-50 transition-colors">
+                            <div className="relative">
+                              <a
+                                href={`https://leetcode.com/${submission.username}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="font-medium hover:text-blue-600 transition-colors"
+                              >
+                                {submission.username}
+                              </a>
+                              {getMedalEmoji(index) && (
+                                <span 
+                                  className="absolute -top-1 -right-6 animate-bounce"
+                                  title={`${index + 1}${index === 0 ? 'st' : index === 1 ? 'nd' : 'rd'} to solve`}
+                                >
+                                  {getMedalEmoji(index)}
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex flex-col items-center gap-1">
+                              <Badge variant="outline" className="px-2 py-0.5">
+                                {submission.lang}
+                              </Badge>
+                              <time 
+                                dateTime={submission.solved_at}
+                                className="text-xs text-neutral-400"
+                              >
+                                {formatTimestamp(submission.solved_at)}
+                              </time>
+                            </div>
+                          </div>
+                      ))
+                    )}
                   </TableCell>
                 ))}
               </TableRow>
