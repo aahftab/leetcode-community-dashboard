@@ -2,7 +2,7 @@
 
 Track and celebrate your community's daily LeetCode progress. See who solved what, in which language, and keep everyone motivated! 🚀
 
-![Dashboard Preview](./public/assets/dashboard-preview.png)
+![Dashboard Preview](./public/dashboard-preview.png)
 
 ## ✨ Features
 
