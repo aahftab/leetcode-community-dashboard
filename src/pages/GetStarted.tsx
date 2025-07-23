@@ -31,7 +31,6 @@ export default function GetStarted() {
             alt="Pin Extension" 
             className="rounded-lg border border-neutral-200 my-4 max-w-md max-h-96"
           />
-          
           <Alert className="mt-4 bg-blue-50">
             <AlertDescription>
               Make sure the extension is properly installed and pinned for easy access
@@ -56,7 +55,12 @@ export default function GetStarted() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold">Step 3: Submit Already Solved Problems</h2>
+          <h2 className="text-xl font-semibold">Case: For problems you have solved before</h2>
+          <Alert className="mt-4 bg-red-100">
+            <AlertDescription>
+              If your submission don't appear on Recent Submissions Sections on your profile 
+            </AlertDescription>
+          </Alert>
           <ol className="list-decimal list-inside space-y-3 text-neutral-600">
             <li>Submit the old solution again</li>
             <li>Click "Submit" to resubmit your solution</li>

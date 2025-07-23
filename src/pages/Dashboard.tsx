@@ -76,8 +76,8 @@ export default function Dashboard() {
     setIsLoading(true)
     setError(null)
     try {
-      const API_ENDPOINT = import.meta.env.VITE_DEV_API_ENDPOINT || "https://esuejqaspbhebyjoycoi.supabase.co/functions/v1/daily-students"
-      const response = await fetch(API_ENDPOINT)
+      const API_ENDPOINT = import.meta.env.VITE_DEV_API_ENDPOINT || "https://esuejqaspbhebyjoycoi.supabase.co/functions/v1"
+      const response = await fetch(API_ENDPOINT+"/daily-students")
       if (!response.ok) throw new Error('Failed to fetch submissions')
       const data = await response.json()
       setProcessedData(processSubmissions(data))
@@ -96,70 +96,77 @@ export default function Dashboard() {
 
   if (isLoading) return (
     <div className="flex items-center justify-center h-64">
-      <ReloadIcon className="h-8 w-8 animate-spin" />
+      <ReloadIcon className="h-8 w-8 animate-spin text-indigo-600" />
     </div>
   )
 
   if (error) return (
-    <Card className="w-full">
-      <CardContent className="flex flex-col items-center justify-center h-64 space-y-4">
+    <div className="bg-white rounded-xl p-6 shadow-sm border-2 border-gray-100">
+      <div className="flex flex-col items-center justify-center h-64 space-y-4">
         <div className="text-red-500 font-medium">{error}</div>
-        <Button onClick={fetchSubmissions}>Try Again</Button>
-      </CardContent>
-    </Card>
+        <Button 
+          onClick={fetchSubmissions}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white"
+        >
+          Try Again
+        </Button>
+      </div>
+    </div>
   )
 
   const questions = Object.keys(processedData)
 
   if (questions.length === 0) return (
-    <Card className="w-full">
-      <CardContent className="flex flex-col items-center justify-center h-64">
-        <p className="text-neutral-500">No submissions found today</p>
-      </CardContent>
-    </Card>
+    <div className="bg-white rounded-xl p-6 shadow-sm border-2 border-gray-100">
+      <div className="flex flex-col items-center justify-center h-64">
+        <p className="text-gray-500">No submissions found today</p>
+      </div>
+    </div>
   )
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <div className="flex justify-between items-center">
-          <div>
-            <CardTitle>Daily LeetCode Progress</CardTitle>
-            <CardDescription>
-              Track community submissions for {questions.length} problems
-            </CardDescription>
-          </div>
-          <div className="flex items-center space-x-4">
-            {lastUpdated && (
-              <span className="text-sm text-neutral-500">
-                Last updated: {lastUpdated.toLocaleTimeString()}
-              </span>
-            )}
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={fetchSubmissions}
-              disabled={isLoading}
-            >
-              <ReloadIcon className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
-            </Button>
-          </div>
+    <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-4xl font-bold text-gray-900">
+            Daily LeetCode Progress
+          </h1>
+          <p className="text-gray-600 mt-2">
+            Tracking {questions.length} problems solved by the community today
+          </p>
         </div>
-      </CardHeader>
-      <CardContent>
+        <div className="flex items-center gap-4">
+          {lastUpdated && (
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <span>Last updated:</span>
+              <time className="font-medium">{lastUpdated.toLocaleTimeString()}</time>
+            </div>
+          )}
+          <Button
+            onClick={fetchSubmissions}
+            disabled={isLoading}
+            className="bg-gray-900 hover:bg-gray-800 text-white"
+          >
+            <ReloadIcon className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow>
+              <TableRow className="bg-gray-50/50">
                 {questions.map((question, qIndex) => (
-                  <TableHead key={question} className="text-center">
-                    <div className="flex flex-col space-y-2">
-                      <span className="text-sm text-neutral-500">#{qIndex + 1}</span>
+                  <TableHead key={question} className="text-center py-5">
+                    <div className="flex flex-col gap-2">
+                      <span className="text-sm font-medium text-gray-400">Problem {qIndex + 1}</span>
                       <a
                         href={`https://leetcode.com/problems/${question}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group hover:text-blue-600 transition-colors"
+                        className="group text-gray-900 font-medium hover:text-blue-600 transition-colors"
                       >
                         {formatQuestionName(question)}
                         <span className="inline-block ml-1 opacity-0 group-hover:opacity-100 transition-opacity">↗</span>
@@ -172,45 +179,48 @@ export default function Dashboard() {
             <TableBody>
               <TableRow>
                 {questions.map((question) => (
-                  <TableCell key={question} className="align-top">
+                  <TableCell key={question} className="align-top p-6">
                     {processedData[question][0].username === null ? (
                       <EmptyQuestionState />
                     ) : (
-                      processedData[question]
-                        .sort((a, b) => new Date(a.solved_at).getTime() - new Date(b.solved_at).getTime())
-                        .map((submission, index) => (
-                          <div key={index} className="flex flex-col items-center space-y-2 p-2 rounded-md hover:bg-neutral-50 transition-colors">
-                            <div className="relative">
-                              <a
-                                href={`https://leetcode.com/${submission.username}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="font-medium hover:text-blue-600 transition-colors"
-                              >
-                                {submission.name || submission.username}
-                              </a>
-                              {getMedalEmoji(index) && (
-                                <span 
-                                  className="absolute -top-1 -right-6 animate-bounce"
-                                  title={`${index + 1}${index === 0 ? 'st' : index === 1 ? 'nd' : 'rd'} to solve`}
+                      <div className="space-y-4">
+                        {processedData[question]
+                          .sort((a, b) => new Date(a.solved_at).getTime() - new Date(b.solved_at).getTime())
+                          .map((submission, index) => (
+                            <div 
+                              key={index} 
+                              className="flex flex-col items-center p-4 rounded-xl hover:bg-gray-50 transition-all"
+                            >
+                              <div className="relative mb-3">
+                                <a
+                                  href={`https://leetcode.com/${submission.username}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="font-medium text-gray-900 hover:text-blue-600 transition-colors"
                                 >
-                                  {getMedalEmoji(index)}
-                                </span>
-                              )}
-                            </div>
-                            <div className="flex flex-col items-center gap-1">
-                              <Badge variant="outline" className="px-2 py-0.5">
+                                  {submission.name || submission.username}
+                                </a>
+                                {getMedalEmoji(index) && (
+                                  <span 
+                                    className="absolute -top-1 -right-6"
+                                    title={`${index + 1}${index === 0 ? 'st' : index === 1 ? 'nd' : 'rd'} to solve`}
+                                  >
+                                    {getMedalEmoji(index)}
+                                  </span>
+                                )}
+                              </div>
+                              <span className="px-3 py-1.5 text-sm font-medium bg-gray-100 text-gray-700 rounded-full mb-2">
                                 {submission.lang}
-                              </Badge>
+                              </span>
                               <time 
                                 dateTime={submission.solved_at}
-                                className="text-xs text-neutral-400"
+                                className="text-xs text-gray-400"
                               >
                                 {formatTimestamp(submission.solved_at)}
                               </time>
                             </div>
-                          </div>
-                      ))
+                        ))}
+                      </div>
                     )}
                   </TableCell>
                 ))}
@@ -218,7 +228,7 @@ export default function Dashboard() {
             </TableBody>
           </Table>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
