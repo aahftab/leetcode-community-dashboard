@@ -76,7 +76,7 @@ export default function Dashboard() {
     setIsLoading(true)
     setError(null)
     try {
-      const API_ENDPOINT = import.meta.env.VITE_DEV_API_ENDPOINT || "https://esuejqaspbhebyjoycoi.supabase.co/functions/v1"
+      const API_ENDPOINT = import.meta.env.VITE_DEV_API_ENDPOINT || import.meta.env.VITE_PROD_API_ENDPOINT"
       const response = await fetch(API_ENDPOINT+"/daily-students")
       if (!response.ok) throw new Error('Failed to fetch submissions')
       const data = await response.json()

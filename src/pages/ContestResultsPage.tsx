@@ -11,7 +11,7 @@ interface ContestResult {
 
 export default function ContestResultsPage() {
   const { contestId } = useParams();
-  const URI = import.meta.env.VITE_DEV_API_ENDPOINT || 'https://esuejqaspbhebyjoycoi.supabase.co/functions/v1';
+  const URI = import.meta.env.VITE_DEV_API_ENDPOINT || import.meta.env.VITE_PROD_API_ENDPOINT;
   const [contestResults, setContestResults] = useState<ContestResult[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

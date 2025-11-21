@@ -18,7 +18,7 @@ interface ContestResult {
 }
 
 export default function ContestsPage() {
-  const URI = import.meta.env.VITE_DEV_API_ENDPOINT || 'https://esuejqaspbhebyjoycoi.supabase.co/functions/v1';
+  const URI = import.meta.env.VITE_DEV_API_ENDPOINT || import.meta.env.VITE_PROD_API_ENDPOINT;
   const [contests, setContests] = useState<Contest[]>([]);
   const navigate = useNavigate();
 
